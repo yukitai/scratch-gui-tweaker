@@ -5,11 +5,11 @@ abstract class UIComponent {
 const h = (
   tag: string,
   classList: string,
-  inner: HTMLElement[],
+  inner: (HTMLElement | string)[],
   attrs?: Record<string, any>
 ): HTMLElement => {
   const el = document.createElement(tag)
-  el.classList.add(classList)
+  classList !== "" && el.classList.add(...classList.split(" "))
   el.append(...inner)
   if (attrs) {
     Object.keys(attrs).forEach(k => {

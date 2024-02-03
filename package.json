@@ -17,6 +17,7 @@
   },
   "scripts": {
     "build": "tsup --dts",
+    "fastbuild": "tsup",
     "watch": "tsup --watch"
   },
   "devDependencies": {

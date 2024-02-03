@@ -2,6 +2,8 @@ import { TariAddonInstance } from "./addon"
 import { Logger } from "./logger"
 import { TariError } from "./types/error"
 import { Result, err, ok } from "./types/result"
+import * as result from "./types/result"
+import * as nullable from "./types/nullable"
 import { TariUI } from "./ui"
 
 type TariId = string
@@ -60,6 +62,8 @@ class Tari {
 
   static UI = new TariUI(document.querySelector("body"))
   static Logger = Logger
+  static Result = result
+  static Nullable = nullable
   static _addons: Record<TariId, TariAddonInstance> = {}
   static _commands: Record<TariId, Command> = {}
 

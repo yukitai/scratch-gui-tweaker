@@ -3,22 +3,12 @@ import { TariError } from "./types/error"
 import { Nullable } from "./types/nullable"
 import { Result, err, ok } from "./types/result"
 import { ListUI } from "./uicomponents/listui"
+import { PanelUI } from "./uicomponents/panelui"
+import { RawUI } from "./uicomponents/rawui"
 import { UIComponent } from "./uicomponents/uicomponent"
+import { STYLE } from "./uistyle"
 
 class TariUI {
-
-  static readonly STYLE = ".tari_ul { list-style: none; }"
-                        + ".tari_li {  }"
-                        + ".tari_container { z-index: 99999; }"
-                        + ""
-                        + ""
-                        + ""
-                        + ""
-                        + ""
-                        + ""
-                        + ""
-                        + ""
-                        + ""
   
   locked: boolean
   instance: Nullable<WeakRef<UIInstance>>
@@ -33,7 +23,7 @@ class TariUI {
     this._style = {}
     this.el = document.createElement("div")
     this.css = document.createElement("style")
-    this.el.classList.add("tari_container")
+    this.el.classList.add("tari")
     el.appendChild(this.css)
     el.appendChild(this.el)
   }
@@ -63,7 +53,7 @@ class TariUI {
   }
 
   render () {
-    this.css.innerHTML = Object.values(this._style).join("")
+    this.css.innerHTML = STYLE + Object.values(this._style).join("")
     this.el.innerHTML = ""
     this._html && this.el.appendChild(this._html)
   }
@@ -91,18 +81,26 @@ class UIInstance {
     if (!this.vaild) {
       return
     }
-    this.ui._style[id] = TariUI.STYLE + css
+    this.ui._style[id] = css
   }
 
   clear_css (id: TariId) {
     if (!this.vaild) {
       return
     }
-    this.ui._style[id] = ""
+    delete this.ui._style[id]
   }
 
   ListUI (components: UIComponent[]): UIComponent {
     return new ListUI(components)
+  }
+
+  RawUI (raw: string): UIComponent {
+    return new RawUI(raw)
+  }
+
+  PanelUI (): UIComponent {
+    return new PanelUI()
   }
 
   render (component?: UIComponent) {

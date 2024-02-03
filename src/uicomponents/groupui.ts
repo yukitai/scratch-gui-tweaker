@@ -1,7 +1,7 @@
 import { UIComponent, h } from "./uicomponent";
 
-class ListUI extends UIComponent {
-
+class GroupUI extends UIComponent {
+  
   components: UIComponent[]
 
   constructor (components: UIComponent[]) {
@@ -11,15 +11,12 @@ class ListUI extends UIComponent {
 
   render (): HTMLElement {
     return h(
-      "ul", "tari-list",
-      this.components.map(component => h(
-        "li", "tari-item",
-        [ component.render() ]
-      ))
+      "tari-g", "",
+      this.components.map(comonent => comonent.render())
     )
   }
 }
 
 export {
-  ListUI
+  GroupUI,
 }
