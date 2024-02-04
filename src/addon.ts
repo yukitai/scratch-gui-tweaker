@@ -1,8 +1,6 @@
 import EventEmitter from "eventemitter3"
 import { CommandInfo, RegisterInfo, RegisterTypeEnum, Tari, TariId } from "./core"
 
-
-
 class TariAddonInstance extends EventEmitter {
 
   id: TariId
@@ -17,7 +15,10 @@ class TariAddonInstance extends EventEmitter {
   register (item: RegisterInfo) {
     switch (item.type) {
       case RegisterTypeEnum.COMMAND:
-        Tari._commands[item.id] = (item as CommandInfo).command
+        Tari._commands[item.id] = {
+          from: this.id,
+          ...(item as CommandInfo).command,
+        }
         break
       default:
         return

@@ -1,4 +1,4 @@
-type TariError = string
+type TariError = Error
 
 export {
   type TariError,

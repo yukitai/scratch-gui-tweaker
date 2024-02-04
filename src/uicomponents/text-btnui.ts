@@ -1,6 +1,6 @@
 import { UIComponent, h } from "./uicomponent";
 
-class InputUI extends UIComponent {
+class TextBtnUI extends UIComponent {
   
   inner: UIComponent
 
@@ -18,5 +18,5 @@ class InputUI extends UIComponent {
 }
 
 export {
-  InputUI,
+  TextBtnUI,
 }

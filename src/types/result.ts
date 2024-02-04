@@ -3,7 +3,7 @@ import { Nullable } from "./nullable"
 type Result<T, E> = [Nullable<E>, Nullable<T>]
 
 const is_ok = <T, E>(x: Result<T, E>): boolean => {
-  return x[1] !== null
+  return x[0] === null
 }
 
 const is_err = <T, E>(x: Result<T, E>): boolean => {
@@ -28,6 +28,7 @@ const unsafe_unwrap_err = <T, E>(x: Result<T, E>): E => {
 
 const unwrap = <T, E>(x: Result<T, E>): T => {
   if (!x[1]) {
+    console.error(x[0])
     throw new TypeError("trying to call unwrap on Result.err()")
   }
   return x[1]
