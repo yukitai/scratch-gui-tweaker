@@ -1,5 +1,3 @@
 type TariError = Error
 
-export {
-  type TariError,
-}
+export { type TariError }

@@ -16,10 +16,4 @@ const has_value = <T>(x: Nullable<T>): x is T => {
   return x !== null
 }
 
-export {
-  type Nullable,
-  nullable,
-  or_undefined,
-  is_null,
-  has_value,
-}
+export { type Nullable, nullable, or_undefined, is_null, has_value }

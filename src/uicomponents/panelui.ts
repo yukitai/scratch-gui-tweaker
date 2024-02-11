@@ -1,117 +1,148 @@
-import { Tari } from "..";
-import { InputTip, MatchType } from "../core";
-import { is_err, is_ok, unwrap, unwrap_err } from "../types/result";
-import { InputUI } from "./inputui";
-import { UIComponent, h } from "./uicomponent";
+import { Tari } from "../core"
+import { UIComponent, h } from "./uicomponent"
 
-type Tip = {
-  from: string,
-  value: string,
-  string: string,
-  description: string,
+type PanelItem = {
+  key: string
+  html: (highlighted: HTMLSpanElement) => HTMLElement
+}
+
+type RenderedPanelItem = {
+  key: string
+  rendered: string
+  rank: number
+  html: (highlighted: HTMLSpanElement) => HTMLElement
 }
 
 class PanelUI extends UIComponent {
-
+  MAX_SHOW_COUNT: number
   search: UIComponent
   $input: HTMLInputElement
-  $tips_container: HTMLDivElement
+  $container: HTMLDivElement
+  get_list: () => PanelItem[]
+  press_enter: () => void
   close: () => void
 
-  constructor (close: () => void) {
+  constructor(
+    max_show_count: number,
+    search: UIComponent,
+    get_list: () => PanelItem[],
+    press_enter: () => void,
+    close: () => void,
+  ) {
     super()
-    this.search = new InputUI("type command here ...")
+    this.MAX_SHOW_COUNT = max_show_count
+    this.search = search
+    this.get_list = get_list
+    this.press_enter = press_enter
     this.close = close
   }
 
-  tip_item (
-    tip: Tip,
-    input_handler: () => void,  
-  ) {
+  static close_panel() {
+    Tari.UI.request_lock(ui => {
+      ui.render()
+    })
+  }
+
+  render_item(item: RenderedPanelItem, input_handler: () => void) {
     const highlighted = h("span", "", [])
-    highlighted.innerHTML = tip.string
-    return h(
-      "li", "tari-item tari-tip tari-text-btn tari-tip-btn",
-      [
-        highlighted,
-        h("span", "tari-comment", [tip.from]),
-      ],
-      {
-        onclick: () => {
-          this.$input.value = tip.value
-          input_handler()
+    highlighted.innerHTML = item.rendered
+    return h("li", "tari-item", [item.html(highlighted)], {
+      onclick: () => {
+        this.$input.value = item.key
+        input_handler()
+      },
+    })
+  }
+
+  highlight(target: string, items: PanelItem[]): RenderedPanelItem[] {
+    return items
+      .map(item => {
+        const key = item.key
+        const parts = [{ type: "unmatched", value: "" }]
+        let rank = 1
+        let i = 0
+        let j = 0
+        let score = 0
+        let jumped = 0
+        while (i < target.length && j < key.length) {
+          if (target[i] === key[j]) {
+            if (score === 0) {
+              parts.push({ type: "matched", value: "" })
+            }
+            rank += ++score
+            ++i
+          } else {
+            if (score > 0) {
+              parts.push({ type: "unmatched", value: "" })
+            }
+            score = 0
+            ++jumped
+          }
+          parts[parts.length - 1].value += key[j++]
         }
-      }
-    )
+        if (j < key.length) {
+          parts.push({ type: "unmatched", value: key.slice(j) })
+        }
+        rank += 8192 >> jumped
+        if (target.length === key.length) {
+          rank += 16384
+        }
+        if (i < target.length) {
+          rank = 0
+        }
+        console.log(target, key, parts)
+        const rendered = parts
+            .map(part => {
+              switch (part.type) {
+                case "matched":
+                  return `<span class="tari-highlight">${part.value}</span>`
+                default:
+                  return part.value
+              }
+            })
+            .join("")
+        return {
+          rendered,
+          rank,
+          ...item,
+        }
+      })
+      .filter(x => x.rank > 0)
+      .toSorted((a, b) => b.rank - a.rank)
+      .slice(0, this.MAX_SHOW_COUNT)
   }
 
-  static build_tips (tips: InputTip[]): Tip[] {
-    return tips.map(PanelUI.build_tip)
+  update() {
+    const content = this.$input.value
+    const items = this.highlight(content, this.get_list())
+    const items_list = items.map(item => {
+      return this.render_item(item, () => this.update())
+    })
+    this.$container.innerHTML = ""
+    this.$container.appendChild(h("ul", "tari-list", items_list))
   }
 
-  static build_tip (tip: InputTip): Tip {
-    const string = tip.matches.map(match => {
-      switch (match.type) {
-        case MatchType.Unmatched:
-          return match.value
-        case MatchType.Matched:
-          return `<span class="tari-highlight">${match.value}</span>`
-      }
-    }).join("")
-    return {
-      value: tip.value,
-      from: tip.from,
-      description: tip.description ?? "",
-      string,
-    }
-  }
-
-  render (): HTMLElement {
+  render(): HTMLElement {
     this.$input = this.search.render() as HTMLInputElement
-    const tips_list = []
-    this.$tips_container = h(
-      "div", "tari-tips",
-      [ h("ul", "tari-list", tips_list) ]
-    ) as HTMLDivElement
-
-    const input_handler = () => {
-      const content = this.$input.value
-      const tips = PanelUI.build_tips(Tari.get_input_tips(content))
-      const tips_list = tips.map(tip => this.tip_item(tip, input_handler))
-      this.$tips_container.innerHTML = ""
-      this.$tips_container.appendChild(
-        h("ul", "tari-list", tips_list)
-      )
-    }
+    const items_list = []
+    this.$container = h("div", "tari-tips", [
+      h("ul", "tari-list", items_list),
+    ]) as HTMLDivElement
 
     const keyup_handler = (e: KeyboardEvent) => {
       if (e.key !== "Enter") {
         return
       }
-      const result = Tari.run_command(this.$input.value)
-      if (is_ok(result)) {
-        this.close()
-      } else {
-        this.$tips_container.innerHTML = `\
-<div class="tari-error"><span class="tari-highlight">error:</span> <span>${
-  unwrap_err(result).message
-}</span></div>`
-      }
+      this.press_enter()
     }
 
-    this.$input.oninput = input_handler
+    this.$input.oninput = () => this.update()
     this.$input.onkeyup = keyup_handler
 
-    return h(
-      "div", "tari-search",
-      [
-        this.$input,
-        this.$tips_container,
-      ]
-    )
+    this.update()
+
+    return h("div", "tari-search", [this.$input, this.$container])
   }
 }
 
-export {
-  PanelUI,
-}
+export { type PanelItem, PanelUI }

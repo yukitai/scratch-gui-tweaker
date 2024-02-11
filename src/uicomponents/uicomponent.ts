@@ -1,12 +1,12 @@
 abstract class UIComponent {
-  abstract render (): HTMLElement
+  abstract render(): HTMLElement
 }
 
 const h = (
   tag: string,
   classList: string,
   inner: (HTMLElement | string)[],
-  attrs?: Record<string, any>
+  attrs?: Record<string, any>,
 ): HTMLElement => {
   const el = document.createElement(tag)
   classList !== "" && el.classList.add(...classList.split(" "))
@@ -19,7 +19,4 @@ const h = (
   return el
 }
 
-export {
-  UIComponent,
-  h
-}
+export { UIComponent, h }

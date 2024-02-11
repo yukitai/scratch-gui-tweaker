@@ -5,7 +5,7 @@ A powerful broswer addon loader for Scratch.
 Easy to devlop an addon.
 
 ```javascript
-((Tari) => {
+;(Tari => {
   const { Logger, Result } = Tari
 
   // get the instance of our addon
@@ -16,12 +16,14 @@ Easy to devlop an addon.
     Logger.info("`yukitai.test_addon` is ready")
 
     // register a command
-    addon.register(Tari.Command("panel", () => {
-      // get the instance of UI
-      const ui = Result.unwrap(Tari.UI.lock())
-      // request for a panel UI
-      ui.render(ui.PanelUI())
-    }))
+    addon.register(
+      Tari.Command("panel", () => {
+        // get the instance of UI
+        const ui = Result.unwrap(Tari.UI.lock())
+        // request for a panel UI
+        ui.render(ui.PanelUI())
+      }),
+    )
 
     // run the command
     Tari.run_command("panel")
