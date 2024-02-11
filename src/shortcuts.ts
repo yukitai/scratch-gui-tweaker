@@ -141,7 +141,6 @@ class ShortcutsManager {
     })
     el.addEventListener("keyup", e => {
       if (this.process_shortcuts(e)) {
-        console.log("Prevented!")
         e.preventDefault()
         e.stopPropagation()
         e.stopImmediatePropagation()

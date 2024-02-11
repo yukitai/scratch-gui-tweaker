@@ -52,7 +52,7 @@ import { UIInstance } from "../ui"
             }</span></div>`
           }
         },
-        PanelUI.close_panel
+        PanelUI.close_panel,
       )
     }
   }

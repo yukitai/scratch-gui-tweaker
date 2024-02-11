@@ -6,6 +6,7 @@ import * as result from "./types/result"
 import * as nullable from "./types/nullable"
 import { TariUI } from "./ui"
 import { Shortcut, ShortcutsManager } from "./shortcuts"
+import { CachedStorage } from "./utils/storage"
 
 type TariId = string
 type CommandHandler =
@@ -78,6 +79,7 @@ class Tari {
   static UI = new TariUI($body)
   static _shortcuts = new ShortcutsManager($body)
   static Logger = Logger
+  static CachedStorage = CachedStorage
   static Result = result
   static Nullable = nullable
   static _addons: Record<TariId, TariAddonInstance> = {}

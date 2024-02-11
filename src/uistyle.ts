@@ -71,7 +71,6 @@ export const STYLE = `\
 }\
 .tari-shortcut {\
   color: #7f7f7f;\
-  margin-right: 0.8rem;\
 }\
 .tari-shortcut-preview {\
   display: flex;\

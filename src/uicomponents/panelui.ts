@@ -90,17 +90,16 @@ class PanelUI extends UIComponent {
         if (i < target.length) {
           rank = 0
         }
-        console.log(target, key, parts)
         const rendered = parts
-            .map(part => {
-              switch (part.type) {
-                case "matched":
-                  return `<span class="tari-highlight">${part.value}</span>`
-                default:
-                  return part.value
-              }
-            })
-            .join("")
+          .map(part => {
+            switch (part.type) {
+              case "matched":
+                return `<span class="tari-highlight">${part.value}</span>`
+              default:
+                return part.value
+            }
+          })
+          .join("")
         return {
           rendered,
           rank,
