@@ -2,10 +2,9 @@ import { TariError } from "../types/error"
 import { Result, err, ok } from "../types/result"
 
 class CachedStorage {
-
   cache: Record<string, string>
 
-  constructor () {
+  constructor() {
     this.cache = {}
   }
 
@@ -39,6 +38,4 @@ class CachedStorage {
   }
 }
 
-export {
-  CachedStorage,
-}
+export { CachedStorage }

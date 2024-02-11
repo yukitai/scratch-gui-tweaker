@@ -17,7 +17,7 @@
   },
   "scripts": {
     "build": "tsup --dts",
-    "fastbuild": "tsup",
+    "fast-build": "tsup",
     "watch": "tsup --watch",
     "fmt": "prettier . -w --tab-width 2 --trailing-comma all --no-semi --arrow-parens avoid",
     "check-fmt": "prettier . -c --tab-width 2 --trailing-comma all --no-semi --arrow-parens avoid"

@@ -93,36 +93,48 @@ type AddonMeta = {
     )
 
     addon.register(
-      Tari.Command("uninstall", (args: string[]): ResultT<null, TariError> => {
-        if (!args[0]) {
-          return Result.err(new Error(`uninstall: expected an addon id`))
-        }
-        return uninstall_addon(args[0])
-      }, "uninstall an addon", (): InputTip[] => {
-        const installed =
-          Result.unwrap(storage.get_item("tari_installed_addons")).split(",")
-        return installed.map(item => {
-          return { value: `uninstall ${item}`, from: ID }
-        })
-      }),
+      Tari.Command(
+        "uninstall",
+        (args: string[]): ResultT<null, TariError> => {
+          if (!args[0]) {
+            return Result.err(new Error(`uninstall: expected an addon id`))
+          }
+          return uninstall_addon(args[0])
+        },
+        "uninstall an addon",
+        (): InputTip[] => {
+          const installed = Result.unwrap(
+            storage.get_item("tari_installed_addons"),
+          ).split(",")
+          return installed.map(item => {
+            return { value: `uninstall ${item}`, from: ID }
+          })
+        },
+      ),
     )
 
     addon.register(
-      Tari.Command("install_addon", (args: string[]): ResultT<null, TariError> => {
-        UI.request_lock(ui => {
-          ui.render()
-        })
-        return Result.ok(null)
-      }),
+      Tari.Command(
+        "install_addon",
+        (args: string[]): ResultT<null, TariError> => {
+          UI.request_lock(ui => {
+            ui.render()
+          })
+          return Result.ok(null)
+        },
+      ),
     )
 
     addon.register(
-      Tari.Command("loaded_addons", (args: string[]): ResultT<null, TariError> => {
-        UI.request_lock(ui => {
-          ui.render()
-        })
-        return Result.ok(null)
-      }),
+      Tari.Command(
+        "loaded_addons",
+        (args: string[]): ResultT<null, TariError> => {
+          UI.request_lock(ui => {
+            ui.render()
+          })
+          return Result.ok(null)
+        },
+      ),
     )
 
     load_installed_addons()
