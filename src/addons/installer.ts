@@ -50,7 +50,7 @@ type AddonMeta = {
       ])
       meta = Object.fromEntries(entries)
       if (!meta.id) {
-        throw ""
+        throw "missing addon id"
       }
     } catch (e) {
       console.error(e)

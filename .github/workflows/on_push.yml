@@ -1,0 +1,26 @@
+name: Check Repository
+run-name: checking ${{ github.actor }}'s push 🚀
+on:
+  - push
+  - pull_request
+jobs:
+  check-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.13.x
+          cache: yarn
+      - name: Install dependencies
+        run: yarn
+      - name: Run lint
+        run: yarn lint
+      - name: Test build
+        run: yarn build
+      - name: Run tests
+        run: yarn test
+      - name: Check format
+        run: yarn check-fmt
