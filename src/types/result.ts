@@ -27,7 +27,7 @@ const unsafe_unwrap_err = <T, E>(x: Result<T, E>): E => {
 }
 
 const unwrap = <T, E>(x: Result<T, E>): T => {
-  if (!x[1]) {
+  if (x[0]) {
     console.error(x[0])
     throw new TypeError("trying to call unwrap on Result.err()")
   }

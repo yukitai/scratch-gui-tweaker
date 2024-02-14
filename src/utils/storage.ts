@@ -9,7 +9,7 @@ class CachedStorage {
   }
 
   get_item(key: string): Result<string, TariError> {
-    if (key in this.cache) {
+    if (this.cache[key]) {
       return ok(this.cache[key])
     }
     try {

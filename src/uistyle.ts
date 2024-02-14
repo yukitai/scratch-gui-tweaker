@@ -52,6 +52,7 @@ export const STYLE = `\
 .tari-tip {\
 }\
 .tari-comment {\
+  padding-left: 1rem;\
   color: #777777;\
 }\
 .tari-text-btn:hover {\
